@@ -8,6 +8,6 @@ DFTB+ recipes
    introduction.rst
    basics/index.rst
    parallel/index.rst
-   advanced/index.rst
+   externaldrivers/index.rst
    licence.rst
 
