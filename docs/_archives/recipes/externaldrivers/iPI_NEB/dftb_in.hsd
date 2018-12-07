@@ -1,0 +1,60 @@
+Geometry =  GenFormat {
+    7 C
+    O H
+    1 1 5.45456e-01 -9.17101e-01 -2.39651e-01
+    1 1 2.94664e+00 -8.91577e-01  4.13894e-03
+    2 2 1.43183e-01 -1.37625e+00 -9.99512e-01
+    2 2 1.74593e+00 -9.12933e-01 -1.19860e-01
+    2 2 3.40567e+00 -4.29286e-02  1.41227e-01
+    2 2 3.39397e+00 -1.62492e+00  4.64723e-01
+    2 2	2.81662e-02 -1.35477e-01  2.69885e-02
+}
+
+#Driver = Socket {
+#    Verbosity = 0 # min verbose
+#    Protocol = i-PI {} # i-PI interface
+#    MaxSteps = -1 # Terminate this instance according to the external driver
+#    File = "torsion"
+#}
+
+Driver = LBFGS {}
+
+Hamiltonian = DFTB {
+    SCC = Yes
+    SCCTolerance = 1.0E-8
+    MaxAngularMomentum {
+        H = "s"
+        O = "p"
+    }
+    Charge = +1
+    Filling = Fermi {
+        Temperature [Kelvin] = 300
+    }
+    SlaterKosterFiles = Type2FileNames {
+        Prefix = "../../slakos/mio-ext/"
+        Separator = "-"
+        Suffix  = ".skf"
+    }
+    ThirdOrderFull = Yes
+    HubbardDerivs {
+        H = -0.16
+        O = -0.17
+    }
+    HCorrection = Damping {
+        Exponent = 4.95
+    }
+}
+
+Options = {
+    WriteAutotestTag = No
+    WriteDetailedOut = No
+}
+
+Analysis = {
+    WriteBandOut = No
+}
+
+ParserOptions = {
+    WriteHSDInput = Yes
+    ParserVersion = 6
+}

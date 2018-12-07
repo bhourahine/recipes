@@ -11,9 +11,17 @@ i-PI
 
 Originally designed for path-integral molecular dynamics, i-PI [iPI2]_ is a
 python based program which can communicate with various electronic structure and
-interatomic potential codes.
+interatomic potential codes, using them to calculate forces and energies under
+its control. It now includes a range of advanced dynamics and structural
+drivers. These include ::
 
-You will require ::
+  * Closed and open path integration to calculate quantum nuclear positions and
+    dynamics
+  * Thermodynamic integration, replica exchange and umbrella sampling to
+    efficiently calculate free energies and sample free energy landscapes
+  * Geometry optimisation and transition state search methods
+
+To use i-PI you will require ::
 
   * Version 2.0 of i-PI
   * Python version 2.6 or later
@@ -40,50 +48,74 @@ This will install the `i-pi` binary in your `~/.local/bin/` directory. If this
 and receive a short description of the code.
 
 Input for i-PI
-~~~~~~~~~~~~~~
+--------------
 
-The i-PI code requires a control file writen in XML, along with the specific
-input file for the code it is driving. Depending on calculations, i-PI can drive
-multiple separate instances of the code, hence allowing for parallel execution.
+The i-PI code requires a control file writen in XML, `input.xml`, along with the
+specific input file for the code it is driving. Depending on the calculation,
+i-PI can drive multiple separate instances of a code, hence allowing for
+parallel execution. This is particularly important for cases where there are
+multiple coupled structures.
 
 DFTB+ requirements
-------------------
+~~~~~~~~~~~~~~~~~~
 
 The DFTB+ binary must be compiled with the socket interface enabled. Edit
-`make.config` and set ::
+`make.config` to set ::
 
   WITH_SOCKETS := 1
 
 before compiling the code.
 
-On starting, DFTB+ will also read the usual `dftb_in.hsd` file, before
-connecting to the i-PI server. This file should contain the usual components of
-the DFTB+ input, including an initial geometry (which is used to assign the
-boundary conditions and chemical types to each atom).
+On starting, DFTB+ will read the usual `dftb_in.hsd` file, before connecting to
+an i-PI server. The `dftb_in.hsd` file should contain the usual components of
+the DFTB+ input, including an initial geometry (which is used to assign the type
+of boundary conditions and chemical species to each atom).
 
-In order to be externally controlled, the `Driver {}` should be set to receive
-commands externally. This can either be via a designated file in the `/tmp/`
-directory, or to a specified machine address. For this set of recipes the local
-machine address will be used ::
+In order to be externally controlled, the `Driver {}` for DFTB+ should be set to
+receive commands. This can either be via a designated file in the `/tmp/`
+directory of your machine (used for the examples here) or by connecting to a
+specified IP address and port number. The file based communication looks like ::
   
   Driver = Socket {
-    Host = '127.0.0.1' # local host, ommit this to communicate via /tmp/
     Protocol = i-PI {} # i-PI interface
     MaxSteps = -1 # run until terminated
   }
 
-The method and location of the communication should match the choice in the i-PI
-input file.
-  
-Quantum dynamics
-~~~~~~~~~~~~~~~~
+The method and location of the communication given in `dftb_in.hsd` should of
+course match the choice made in the i-PI `input.xml` file.
 
-Path integral molecular dynamics
+Quantum atomic dynamics
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Path integral molecular dynamics can be used to sample quantum behaviour at
+finite temperatures. It relies on the equivalence between the thermal ensemble
+behavior of a set of connected classical systems and the quantum behaviour of a
+single system.
+
+If the classical systems are coupled as `ring polymers`, this allows the
+determination of equilibrium properties, such as the average location and
+distribution around that site. The i-PI code samples the quantum mechanics as
+distinguishable particles, hence 
 
 Replica exchange
 ~~~~~~~~~~~~~~~~
 
-Parallel tempering 
+Standard molecular dynamics can have trouble fully exploring complex energy
+landscapes in a reasonable computaional time. Hence this may not be efficient
+for calculating properties such as ensemble averages.
+
+Replica exchange instead samples the system by using several coupled systems at
+different temperatures, where replicas can exchange temperatures. This allows
+the system to more rapidly explore the free energy landscape by surmounting
+barriers which would prevent ergodic behaviour for low temperature sampling,
+while also retaining the details of the landscape at low temperatures.
+
+NEB for barriers
+~~~~~~~~~~~~~~~~
+
+[Input: `recipes/externaldrivers/iPI_NEB`]
+
+
 
 References
 ~~~~~~~~~~
