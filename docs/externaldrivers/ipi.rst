@@ -87,6 +87,8 @@ course match the choice made in the i-PI `input.xml` file.
 Quantum atomic dynamics
 ~~~~~~~~~~~~~~~~~~~~~~~
 
+[Input: `recipes/externaldrivers/iPI_PI`]
+
 Path integral molecular dynamics can be used to sample quantum behaviour at
 finite temperatures. It relies on the equivalence between the thermal ensemble
 behavior of a set of connected classical systems and the quantum behaviour of a
