@@ -53,3 +53,25 @@ solution that grows as the square of the number of atoms.
 See for example `Snyder, Annu. Rev. Comput. Sci. 1: 289, 1986
 <https://dx.doi.org/10.1146/annurev.cs.01.060186.001445>`_ for a discussion of
 these issues.
+
+
+Spin locks
+==========
+
+The idealised performance of Amdahl's law assumes that the parallel parts of the
+calculation can be spread over arbitrarily large numbers of computing units
+without any contention between them.
+
+In reality, finite problems can only be meaningfully broken down to some lower
+limit of sub-problem size. Similarly, operations that require different
+processes to cooperate can find them waiting for each other to complete
+operation, then release resulting data and the latency of moving it around
+between different levels of the `memory hierarchy
+<https://en.wikipedia.org/wiki/Memory_hierarchy>`_.
+
+This leads in practice to the performance of a calculation actually degrading if
+too many processors are requested. This will depend on the particular hardware
+and libraries being used.
+
+Below are examples for an excited state calculation of a small molecule, where
+being too greedy leads to a slower calculation.
