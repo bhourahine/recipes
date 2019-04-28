@@ -1,6 +1,6 @@
 <!-- i-PI input for nudged elastic band calculation -->
 <simulation verbosity='medium'>
-
+  
   <!-- Communicate via /tmp/ipi-torsion -->
   <ffsocket mode='unix' name='torsion'>
     <latency> 1.0e-1 </latency>
@@ -8,18 +8,18 @@
     <address>torsion</address>
   </ffsocket>
   
-  <total_steps> 1000 </total_steps>
+  <total_steps> 20 </total_steps>
   
   <output prefix='simulation'>
-
+    
     <!-- file prefix for simulation -->
     <trajectory
 	filename='pos' cell_units='angstrom'> positions{angstrom}
     </trajectory>
-
+    
     <!-- data for record in output, set for every step -->
-    <properties stride='1'> [step, time, potential, forcemod] </properties>
-
+    <properties stride='1'> [step, potential, forcemod] </properties>
+    
     <!--
 	output the potential energies of the images in the string of images to
 	neb file
@@ -27,7 +27,13 @@
     <properties stride='1' filename='neb'> [step, potential(0), potential(1),
     potential(2), potential(3), potential(4), potential(5), potential(6),
     potential(7), potential(8), potential(9), potential(10), potential(11),
-    potential(12), potential(13), potential(14), potential(15), potential(16)]
+    potential(12), potential(13), potential(14), potential(15),
+    potential(16), potential(17), potential(18), potential(19),
+    potential(20), potential(21), potential(22), potential(23),
+    potential(24), potential(25), potential(26), potential(27),
+    potential(28), potential(29), potential(30), potential(31),
+    potential(32), potential(33), potential(34)
+    ]
     </properties>
     
   </output>
@@ -38,32 +44,34 @@
   </prng>
   
   <system>
-
+    
     <!-- where to find the forces/energies -->
     <forces>
       <force forcefield='torsion'/>
     </forces>
     
-    <initialize nbeads='16'>
-      <file mode='xyz' units='angstrom'> init.xyz </file>
+    <initialize nbeads='35'>
+      <file mode='xyz' units='angstrom'> start.xyz </file>
       <cell> [50., 0, 0, 0, 50., 0, 0, 0, 50.] </cell>
     </initialize>
     
     <motion mode='neb'>
       <neb_optimizer mode='lbfgs'>
-        
+		
         <ls_options>
           <step> 1.0e-3 </step>
           <tolerance> 1.0e-5 </tolerance>
           <iter> 150 </iter>
         </ls_options>
-        
+        	
         <tolerances>
-          <energy> 1.0e-7 </energy>
+          <energy> 1.0e-5 </energy>
           <force> 1.0e-3 </force>
-          <position> 1.0e-7 </position>
+          <position> 1.0e-5 </position>
         </tolerances>
-        
+	
+        <!-- climb>True</climb -->
+	
         <biggest_step> 2.0 </biggest_step>
       </neb_optimizer>
     </motion>
