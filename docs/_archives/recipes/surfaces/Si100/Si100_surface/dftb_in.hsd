@@ -1,0 +1,73 @@
+Geometry = GenFormat {
+<<< Si_2x1.gen
+}
+
+Driver = LBFGS {
+    # top layer of the surface only
+    MovedAtoms = 1:16
+    AppendGeometries = Yes
+}
+
+Transport{
+  Device{
+    AtomRange = 1 48
+  }
+  Contact{
+    Id = "bulk"
+    AtomRange = 49 112
+  }
+  #Task= contactHamiltonian{
+  #  contactId = "bulk"
+  #}
+}
+
+Hamiltonian = DFTB {
+    SCC = Yes
+    #ReadInitialCharges = Yes
+    MaxSCCIterations = 400
+    MaxAngularMomentum {
+        Si = "p"
+    }
+    Filling = Fermi {
+      Temperature [K] = 500
+    }
+    SlaterKosterFiles = Type2FileNames {
+        Prefix = "../"
+        Separator = "-"
+        Suffix = ".skf"
+    }
+    KPointsAndWeights = SupercellFolding {
+        10 0 0
+        0 10 0
+        0 0 1
+        0.5 0.5 0.
+    }
+    Mixer = Anderson {
+      MixingParameter = 0.01
+    }
+    Solver = GreensFunction{
+      Verbosity = 1
+    }
+    Electrostatics = Poisson {
+      MinimalGrid [Angstrom] = 0.3 0.3 0.3
+      PoissonThickness [AA] = 50
+    }
+}
+
+#Analysis{
+#  TunnelingAndDOS{
+#    EnergyRange [eV] = -5 2
+#    EnergyStep [eV] = 0.1
+#  }
+#}
+
+ParserOptions {
+    ParserVersion = 8
+}
+
+Parallel {
+    # Allow OMP threads explicitely to test for hybrid parallelisation with
+    # MPI-binary. (Check the manual before using this in production runs!)
+    UseOmpThreads = Yes
+    Groups = 4
+}
