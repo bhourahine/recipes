@@ -21,4 +21,5 @@ or more advanced molecular dynamics methods at the DFTB level.
 
    ase/index.rst
    pyapi/pyapi.rst
+   pyapi/jupyter.rst
    ipi/ipi.rst
